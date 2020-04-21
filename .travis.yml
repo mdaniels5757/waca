@@ -3,17 +3,21 @@ language: php
 php:
   - 7.3
   
-matrix:
+jobs:
   allow_failures:
     - php: 7.3
+
+os:
+  - linux
+
+dist:
+  - xenial
 
 before_install:
   - pip install --user codecov
 
 after_success:
   - codecov
-
-sudo: false
 
 git:
   submodules: true
