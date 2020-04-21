@@ -1,0 +1,23 @@
+{
+  "name": "waca",
+  "version": "1.0.0",
+  "description": "enwiki ACC tool",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdaniels5757/waca.git"
+  },
+  "author": "",
+  "license": "SEE LICENSE IN repo",
+  "bugs": {
+    "url": "https://github.com/mdaniels5757/waca/issues"
+  },
+  "homepage": "https://github.com/mdaniels5757/waca#readme"
+}
