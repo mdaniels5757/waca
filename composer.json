@@ -1,0 +1,10 @@
+{
+	"require": {
+		"mediawiki/oauthclient": "1.1.0"
+		"smarty/smarty": "~3.1.14"
+		"twbs/bootstrap": "~2.3.2"
+	}
+	"config": {
+		"vendor-dir": "vendor"
+	}
+}
