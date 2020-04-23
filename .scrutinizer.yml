@@ -1,6 +1,9 @@
 inherit: true
 
 build:
+  tests:
+    override:
+      - true # To disable Scrutinizer's own CI.
   nodes:
     analysis:
       tests:
@@ -16,9 +19,7 @@ tools:
     php_pdepend: true
     php_analyzer: true
     sensiolabs_security_checker: true
-    external_code_coverage: true
 
 filter:
     excluded_paths:
         - lib/*
-        - tests/*
