@@ -8,7 +8,9 @@ build:
     analysis:
       tests:
         override:
-          - php-scrutinizer-run
+          - php-scrutinizer-run --enable-security-analysis
+          - command: phpcs-run
+              use_website_config: true
 
 tools:
     php_code_sniffer: true
