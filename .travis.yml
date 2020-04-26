@@ -23,7 +23,7 @@ before_script:
   - pecl install runkit7-alpha
   - phpenv config-add .travis.php.ini
   - cd sql
-  - bash test_db.sh 1 test_db localhost root
+  - bash test_db.sh 1 localhost test_db root
   - cd ..
 
 script:
