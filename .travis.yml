@@ -20,7 +20,7 @@ git:
   submodules: true
 
 before_script:
-  - pecl install runkit7
+  - pecl install runkit7-alpha
   - phpenv config-add .travis.php.ini
   - cd sql
   - bash test_db.sh 1
