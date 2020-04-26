@@ -43,7 +43,7 @@ if [ $# -ge 5 ]; then
 elif [ -n "$MYSQL_PASSWORD" ]; then
 	SQL_PASSWORD=-p$MYSQL_PASSWORD
 else
-	SQL_PASSWORD=
+	SQL_PASSWORD=""
 fi
 
 echo "Check a few configuration flags"
