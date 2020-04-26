@@ -21,12 +21,12 @@ tools:
     php_pdepend: true
     php_analyzer: true
     sensiolabs_security_checker: true
-    external_code_coverage: false
+    external_code_coverage: true
 filter:
     excluded_paths:
         - lib/*
         - tests/*
-        - includes/*
+        - includes/SiteConfiguration.php
 
 build_failure_conditions:
     - 'elements.rating(<= F).new.exists'
