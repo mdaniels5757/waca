@@ -12,12 +12,11 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
-use Waca\Pages\PageViewRequest;
+use Waca\Pages\RequestAction\PageBreakReservation;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\ILocationProvider;
 use Waca\Providers\Interfaces\IRDnsProvider;
 use Waca\Providers\Interfaces\IXffTrustProvider;
-use Waca\Security\SecurityConfiguration;
 use Waca\Security\SecurityManager;
 use Waca\SiteConfiguration;
 use Waca\WebRequest;
@@ -70,18 +69,23 @@ trait RequestData
     protected function isAllowedPrivateData(Request $request, User $currentUser)
     {
         // Test the main security barrier for private data access using SecurityManager
-        if ($this->barrierTest('privateData')) {
+        if ($this->barrierTest('alwaysSeePrivateData', $currentUser, 'RequestData')) {
             // Tool admins/check-users can always see private data
             return true;
         }
 
         // reserving user is allowed to see the data
-        if ($currentUser->getId() === $request->getReserved() && $request->getReserved() !== null) {
+        if ($currentUser->getId() === $request->getReserved()
+            && $request->getReserved() !== null
+            && $this->barrierTest('seePrivateDataWhenReserved', $currentUser, 'RequestData')
+        ) {
             return true;
         }
 
         // user has the reveal hash
-        if (WebRequest::getString('hash') === $request->getRevealHash()) {
+        if (WebRequest::getString('hash') === $request->getRevealHash()
+            && $this->barrierTest('seePrivateDataWithHash', $currentUser, 'RequestData')
+        ) {
             return true;
         }
 
@@ -92,14 +96,17 @@ trait RequestData
     /**
      * Tests the security barrier for a specified action.
      *
-     * Intended to be used from within templates
+     * Don't use within templates
      *
-     * @param string $action
+     * @param string      $action
      *
-     * @return boolean
+     * @param User        $user
+     * @param null|string $pageName
+     *
+     * @return bool
      * @category Security-Critical
      */
-    abstract protected function barrierTest($action);
+    abstract protected function barrierTest($action, User $user, $pageName = null);
 
     /**
      * Gets the name of the route that has been passed from the request router.
@@ -153,6 +160,8 @@ trait RequestData
                 $this->assign('requestIsReservedByMe', true);
             }
         }
+
+        $this->assign('canBreakReservation', $this->barrierTest('force', $currentUser, PageBreakReservation::class));
     }
 
     /**
@@ -207,11 +216,9 @@ trait RequestData
 
         $this->assign('showRevealLink', false);
         if ($request->getReserved() === $currentUser->getId() ||
-            $currentUser->isAdmin() ||
-            $currentUser->isCheckuser()
+            $this->barrierTest('alwaysSeeHash', $currentUser, 'RequestData')
         ) {
             $this->assign('showRevealLink', true);
-
             $this->assign('revealHash', $request->getRevealHash());
         }
 
@@ -332,27 +339,6 @@ trait RequestData
             }
 
             $this->assign("requestProxyData", $requestProxyData);
-        }
-    }
-
-    /**
-     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-     * the return value from this function.
-     *
-     * If this page even supports actions, you will need to check the route
-     *
-     * @return SecurityConfiguration
-     * @category Security-Critical
-     */
-    protected function getSecurityConfiguration()
-    {
-        switch ($this->getRouteName()) {
-            case PageViewRequest::PRIVATE_DATA_BARRIER:
-                return $this->getSecurityManager()->configure()->asGeneralPrivateDataAccess();
-            case PageViewRequest::SET_BAN_BARRIER:
-                return $this->getSecurityManager()->configure()->asAdminPage();
-            default:
-                return $this->getSecurityManager()->configure()->asInternalPage();
         }
     }
 }

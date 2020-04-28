@@ -12,7 +12,8 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
-use Waca\Security\SecurityConfiguration;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
+use Waca\Pages\RequestAction\PageBreakReservation;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -65,8 +66,12 @@ class PageSearch extends InternalPageBase
                     return $entry->getReserved();
                 },
                 $results);
-            $userList = User::getUsernames($userIds, $this->getDatabase());
+            $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchMap('username');
             $this->assign('userlist', $userList);
+
+            $currentUser = User::getCurrent($this->getDatabase());
+            $this->assign('canBan', $this->barrierTest('set', $currentUser, PageBan::class));
+            $this->assign('canBreakReservation', $this->barrierTest('force', $currentUser, PageBreakReservation::class));
 
             $this->assignCSRFToken();
             $this->setTemplate('search/searchResult.tpl');
@@ -88,10 +93,13 @@ class PageSearch extends InternalPageBase
     {
         $padded = '%' . $searchTerm . '%';
 
-        return RequestSearchHelper::get($this->getDatabase())
+        /** @var Request[] $requests */
+        $requests = RequestSearchHelper::get($this->getDatabase())
             ->byName($padded)
             ->excludingPurgedData($this->getSiteConfiguration())
             ->fetch();
+
+        return $requests;
     }
 
     /**
@@ -110,10 +118,13 @@ class PageSearch extends InternalPageBase
 
         $padded = '%' . $searchTerm . '%';
 
-        return RequestSearchHelper::get($this->getDatabase())
+        /** @var Request[] $requests */
+        $requests = RequestSearchHelper::get($this->getDatabase())
             ->byEmailAddress($padded)
             ->excludingPurgedData($this->getSiteConfiguration())
             ->fetch();
+
+        return $requests;
     }
 
     /**
@@ -125,24 +136,13 @@ class PageSearch extends InternalPageBase
      */
     private function getIpSearchResults($searchTerm)
     {
-        return RequestSearchHelper::get($this->getDatabase())
+        /** @var Request[] $requests */
+        $requests = RequestSearchHelper::get($this->getDatabase())
             ->byIp($searchTerm)
             ->excludingPurgedData($this->getSiteConfiguration())
             ->fetch();
-    }
 
-    /**
-     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-     * the return value from this function.
-     *
-     * If this page even supports actions, you will need to check the route
-     *
-     * @return SecurityConfiguration
-     * @category Security-Critical
-     */
-    protected function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asInternalPage();
+        return $requests;
     }
 
     /**

@@ -14,7 +14,7 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
-use Waca\Security\SecurityConfiguration;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -37,7 +37,11 @@ class PageBan extends InternalPageBase
                 return $entry->getUser();
             },
             $bans);
-        $userList = User::getUsernames($userIds, $this->getDatabase());
+        $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchMap('username');
+
+        $user = User::getCurrent($this->getDatabase());
+        $this->assign('canSet', $this->barrierTest('set', $user));
+        $this->assign('canRemove', $this->barrierTest('remove', $user));
 
         $this->assign('usernames', $userList);
         $this->assign('activebans', $bans);
@@ -104,26 +108,6 @@ class PageBan extends InternalPageBase
             $this->assignCSRFToken();
             $this->assign('ban', $ban);
             $this->setTemplate('bans/unban.tpl');
-        }
-    }
-
-    /**
-     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-     * the return value from this function.
-     *
-     * If this page even supports actions, you will need to check the route
-     *
-     * @return SecurityConfiguration
-     * @category Security-Critical
-     */
-    protected function getSecurityConfiguration()
-    {
-        // display of bans is allowed for any user, but setting and removing bans is admin-only.
-        switch ($this->getRouteName()) {
-            case "main":
-                return $this->getSecurityManager()->configure()->asInternalPage();
-            default:
-                return $this->getSecurityManager()->configure()->asAdminPage();
         }
     }
 

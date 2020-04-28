@@ -8,9 +8,12 @@
 
 namespace Waca\Pages\Statistics;
 
+use DateTime;
+use PDO;
 use Waca\DataObjects\User;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
+use Waca\Pages\PageUserManagement;
 use Waca\Tasks\InternalPageBase;
-use Waca\WebRequest;
 
 class StatsInactiveUsers extends InternalPageBase
 {
@@ -18,21 +21,27 @@ class StatsInactiveUsers extends InternalPageBase
     {
         $this->setHtmlTitle('Inactive Users :: Statistics');
 
-        $showImmune = false;
-        if (WebRequest::getBoolean('showimmune')) {
-            $showImmune = true;
-        }
+        $date = new DateTime();
+        $date->modify("-45 days");
 
-        $this->assign('showImmune', $showImmune);
-        $inactiveUsers = User::getAllInactive($this->getDatabase());
+        $inactiveUsers = UserSearchHelper::get($this->getDatabase())
+            ->byStatus('Active')
+            ->lastActiveBefore($date)
+            ->getRoleMap($roleMap)
+            ->fetch();
+
         $this->assign('inactiveUsers', $inactiveUsers);
+        $this->assign('roles', $roleMap);
+        $this->assign('canSuspend',
+            $this->barrierTest('suspend', User::getCurrent($this->getDatabase()), PageUserManagement::class));
+
+        $immuneUsers = $this->getDatabase()
+            ->query("SELECT user FROM userrole WHERE role IN ('toolRoot', 'checkuser') GROUP BY user;")
+            ->fetchAll(PDO::FETCH_COLUMN);
+        
+        $this->assign('immune', array_fill_keys($immuneUsers, true));
 
         $this->setTemplate('statistics/inactive-users.tpl');
         $this->assign('statsPageTitle', 'Inactive tool users');
-    }
-
-    public function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asInternalPage();
     }
 }

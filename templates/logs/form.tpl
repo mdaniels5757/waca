@@ -6,9 +6,18 @@
     <select id="inputAction" name="filterAction" title="Log Action">
         <option value="">All log actions</option>
         {foreach $allLogActions as $action => $description}
-            <option value="{$action}" {if $action == $filterAction}selected="selected"{/if}>{$description}</option>
+            <option value="{$action|escape}" {if $action == $filterAction}selected="selected"{/if}>{$description|escape}</option>
         {/foreach}
     </select>
+    <select id="inputObjectType" name="filterObjectType" title="Object type">
+        <option value="">All object types</option>
+        {foreach $allObjectTypes as $objectType => $description}
+            <option value="{$objectType}" {if $objectType == $filterObjectType}selected="selected"{/if}>{$description}</option>
+        {/foreach}
+    </select>
+
+    <input type="number" id="inputObjectId" placeholder="Object ID" name="filterObjectId" value="{$filterObjectId|escape}"/>
+
     <label class="radio inline">
         <input type="radio" id="inlineCheckbox1" name="limit" value="50" {if $limit == 50}checked{/if} /> 50 results
     </label>

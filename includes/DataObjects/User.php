@@ -27,8 +27,7 @@ use Waca\WebRequest;
  */
 class User extends DataObject
 {
-    const STATUS_USER = 'User';
-    const STATUS_ADMIN = 'Admin';
+    const STATUS_ACTIVE = 'Active';
     const STATUS_SUSPENDED = 'Suspended';
     const STATUS_DECLINED = 'Declined';
     const STATUS_NEW = 'New';
@@ -40,7 +39,6 @@ class User extends DataObject
     private $welcome_sig = "";
     private $lastactive = "0000-00-00 00:00:00";
     private $forcelogout = 0;
-    private $checkuser = 0;
     private $forceidentified = null;
     private $welcome_template = 0;
     private $abortpref = 0;
@@ -240,166 +238,6 @@ class User extends DataObject
         return $resultObject;
     }
 
-    /**
-     * Gets all users with a supplied status
-     *
-     * @param string      $status
-     * @param PdoDatabase $database
-     *
-     * @return User[]
-     */
-    public static function getAllWithStatus($status, PdoDatabase $database)
-    {
-        $statement = $database->prepare("SELECT * FROM user WHERE status = :status");
-        $statement->execute(array(":status" => $status));
-
-        $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
-
-        /** @var User $u */
-        foreach ($resultObject as $u) {
-            $u->setDatabase($database);
-        }
-
-        return $resultObject;
-    }
-
-    /**
-     * Gets all checkusers
-     *
-     * @param PdoDatabase $database
-     *
-     * @return User[]
-     */
-    public static function getAllCheckusers(PdoDatabase $database)
-    {
-        $statement = $database->prepare("SELECT * FROM user WHERE checkuser = 1;");
-        $statement->execute();
-
-        $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
-
-        $resultsCollection = array();
-
-        /** @var User $u */
-        foreach ($resultObject as $u) {
-            $u->setDatabase($database);
-
-            if (!$u->isCheckuser()) {
-                continue;
-            }
-
-            $resultsCollection[] = $u;
-        }
-
-        return $resultsCollection;
-    }
-
-    /**
-     * Gets all inactive users
-     *
-     * @param PdoDatabase $database
-     *
-     * @return User[]
-     */
-    public static function getAllInactive(PdoDatabase $database)
-    {
-        $date = new DateTime();
-        $date->modify("-45 days");
-
-        $statement = $database->prepare(<<<SQL
-			SELECT * 
-			FROM user 
-			WHERE lastactive < :lastactivelimit 
-				AND status != 'Suspended' 
-				AND status != 'Declined' 
-				AND status != 'New' 
-			ORDER BY lastactive ASC;
-SQL
-        );
-        $statement->execute(array(":lastactivelimit" => $date->format("Y-m-d H:i:s")));
-
-        $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
-
-        /** @var User $u */
-        foreach ($resultObject as $u) {
-            $u->setDatabase($database);
-        }
-
-        return $resultObject;
-    }
-
-    /**
-     * Gets all the usernames in the system
-     *
-     * @param PdoDatabase      $database
-     * @param null|bool|string $filter If null, no filter. If true, active users only, otherwise provided status.
-     *
-     * @return string[]
-     */
-    public static function getAllUsernames(PdoDatabase $database, $filter = null)
-    {
-        if ($filter === null) {
-            $userListQuery = "SELECT username FROM user;";
-            $userListResult = $database->query($userListQuery);
-        }
-        elseif ($filter === true) {
-            $userListQuery = "SELECT username FROM user WHERE status IN ('User', 'Admin');";
-            $userListResult = $database->query($userListQuery);
-        }
-        else {
-            $userListQuery = "SELECT username FROM user WHERE status = :status;";
-            $userListResult = $database->prepare($userListQuery);
-            $userListResult->execute(array(":status" => $filter));
-        }
-
-        return $userListResult->fetchAll(PDO::FETCH_COLUMN);
-    }
-
-    /**
-     * @param array       $userIds
-     * @param PdoDatabase $database
-     *
-     * @return array
-     * @throws Exception
-     */
-    public static function getUsernames($userIds, PdoDatabase $database)
-    {
-        if (!is_array($userIds)) {
-            throw new Exception('getUsernames() expects array');
-        }
-
-        if (count($userIds) === 0) {
-            // empty set of data
-            return array();
-        }
-
-        // Urgh. OK. You can't use IN() with parameters directly, so let's munge something together.
-        $userCount = count($userIds);
-
-        // Firstly, let's create a string of question marks, which will do as positional parameters.
-        $inSection = str_repeat('?,', $userCount - 1) . '?';
-
-        // Now, let's put that into the query. Direct string building here is OK, we're not dealing with user input,
-        // only the *count* of user input, which is safe.
-        $query = "SELECT id, username FROM user WHERE id IN ({$inSection})";
-
-        // Prepare the query
-        $statement = $database->prepare($query);
-
-        // Bind the parameters and execute - in one go - since we already have a handy array kicking around.
-        $statement->execute($userIds);
-
-        $resultSet = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-        $users = array();
-        foreach ($resultSet as $row) {
-            $users[$row['id']] = $row['username'];
-        }
-
-        $statement->closeCursor();
-
-        return $users;
-    }
-
     #endregion
 
     /**
@@ -414,13 +252,13 @@ SQL
             $statement = $this->dbObject->prepare(<<<SQL
 				INSERT INTO `user` ( 
 					username, email, password, status, onwikiname, welcome_sig, 
-					lastactive, forcelogout, checkuser, forceidentified,
+					lastactive, forcelogout, forceidentified,
 					welcome_template, abortpref, confirmationdiff, emailsig, 
 					oauthrequesttoken, oauthrequestsecret, 
 					oauthaccesstoken, oauthaccesssecret
 				) VALUES (
 					:username, :email, :password, :status, :onwikiname, :welcome_sig,
-					:lastactive, :forcelogout, :checkuser, :forceidentified,
+					:lastactive, :forcelogout, :forceidentified,
 					:welcome_template, :abortpref, :confirmationdiff, :emailsig, 
 					:ort, :ors, :oat, :oas
 				);
@@ -434,7 +272,6 @@ SQL
             $statement->bindValue(":welcome_sig", $this->welcome_sig);
             $statement->bindValue(":lastactive", $this->lastactive);
             $statement->bindValue(":forcelogout", $this->forcelogout);
-            $statement->bindValue(":checkuser", $this->checkuser);
             $statement->bindValue(":forceidentified", $this->forceidentified);
             $statement->bindValue(":welcome_template", $this->welcome_template);
             $statement->bindValue(":abortpref", $this->abortpref);
@@ -460,7 +297,7 @@ SQL
 					password = :password, status = :status,
 					onwikiname = :onwikiname, welcome_sig = :welcome_sig, 
 					lastactive = :lastactive, forcelogout = :forcelogout, 
-					checkuser = :checkuser, forceidentified = :forceidentified,
+					forceidentified = :forceidentified,
 					welcome_template = :welcome_template, abortpref = :abortpref, 
 					confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
 					oauthrequesttoken = :ort, oauthrequestsecret = :ors, 
@@ -483,7 +320,6 @@ SQL
             $statement->bindValue(':welcome_sig', $this->welcome_sig);
             $statement->bindValue(':lastactive', $this->lastactive);
             $statement->bindValue(':forcelogout', $this->forcelogout);
-            $statement->bindValue(':checkuser', $this->checkuser);
             $statement->bindValue(':forceidentified', $this->forceidentified);
             $statement->bindValue(':welcome_template', $this->welcome_template);
             $statement->bindValue(':abortpref', $this->abortpref);
@@ -867,24 +703,9 @@ SQL
 
     #region user access checks
 
-    /**
-     * Tests if the user is an admin
-     * @return bool
-     * @category Security-Critical
-     */
-    public function isAdmin()
+    public function isActive()
     {
-        return $this->status == "Admin";
-    }
-
-    /**
-     * Tests if the user is a checkuser
-     * @return bool
-     * @category Security-Critical
-     */
-    public function isCheckuser()
-    {
-        return $this->checkuser == 1 || $this->oauthCanCheckUser();
+        return $this->status == self::STATUS_ACTIVE;
     }
 
     /**
@@ -921,7 +742,7 @@ SQL
      */
     public function isSuspended()
     {
-        return $this->status == "Suspended";
+        return $this->status == self::STATUS_SUSPENDED;
     }
 
     /**
@@ -931,17 +752,7 @@ SQL
      */
     public function isNewUser()
     {
-        return $this->status == "New";
-    }
-
-    /**
-     * Tests if the user is a standard-level user
-     * @return bool
-     * @category Security-Critical
-     */
-    public function isUser()
-    {
-        return $this->status == "User";
+        return $this->status == self::STATUS_NEW;
     }
 
     /**
@@ -951,7 +762,7 @@ SQL
      */
     public function isDeclined()
     {
-        return $this->status == "Declined";
+        return $this->status == self::STATUS_DECLINED;
     }
 
     /**

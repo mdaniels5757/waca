@@ -12,7 +12,7 @@ use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
 use Waca\Helpers\LogHelper;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
-use Waca\Security\SecurityConfiguration;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -27,11 +27,17 @@ class PageLog extends InternalPageBase
 
         $filterUser = WebRequest::getString('filterUser');
         $filterAction = WebRequest::getString('filterAction');
+        $filterObjectType = WebRequest::getString('filterObjectType');
+        $filterObjectId = WebRequest::getInt('filterObjectId');
 
         $database = $this->getDatabase();
 
+        if (!array_key_exists($filterObjectType, LogHelper::getObjectTypes())) {
+            $filterObjectType = null;
+        }
+
         $this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {
-            return User::getAllUsernames($database);
+            return UserSearchHelper::get($database)->fetchColumn('username');
         });
 
         $limit = WebRequest::getInt('limit');
@@ -47,13 +53,7 @@ class PageLog extends InternalPageBase
         $offset = ($page - 1) * $limit;
 
         $logSearch = LogSearchHelper::get($database)->limit($limit, $offset);
-        if ($filterUser !== null) {
-            $logSearch->byUser(User::getByUsername($filterUser, $database)->getId());
-        }
-
-        if ($filterAction !== null) {
-            $logSearch->byAction($filterAction);
-        }
+        $this->setupSearchHelper($logSearch, $database, $filterUser, $filterAction, $filterObjectType, $filterObjectId);
 
         /** @var Log[] $logs */
         $logs = $logSearch->getRecordCount($count)->fetch();
@@ -74,24 +74,13 @@ class PageLog extends InternalPageBase
 
         $this->assign("filterUser", $filterUser);
         $this->assign("filterAction", $filterAction);
+        $this->assign("filterObjectType", $filterObjectType);
+        $this->assign("filterObjectId", $filterObjectId);
 
         $this->assign('allLogActions', LogHelper::getLogActions($this->getDatabase()));
+        $this->assign('allObjectTypes', LogHelper::getObjectTypes());
 
         $this->setTemplate("logs/main.tpl");
-    }
-
-    /**
-     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-     * the return value from this function.
-     *
-     * If this page even supports actions, you will need to check the route
-     *
-     * @return SecurityConfiguration
-     * @category Security-Critical
-     */
-    protected function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asInternalPage();
     }
 
     /**
@@ -140,5 +129,38 @@ class PageLog extends InternalPageBase
 
         $this->assign("limit", $limit);
         $this->assign("page", $page);
+    }
+
+    /**
+     * @param $logSearch
+     * @param $database
+     * @param $filterUser
+     * @param $filterAction
+     * @param $filterObjectType
+     * @param $filterObjectId
+     */
+    private function setupSearchHelper(
+        $logSearch,
+        $database,
+        $filterUser,
+        $filterAction,
+        $filterObjectType,
+        $filterObjectId
+    ) {
+        if ($filterUser !== null) {
+            $logSearch->byUser(User::getByUsername($filterUser, $database)->getId());
+        }
+
+        if ($filterAction !== null) {
+            $logSearch->byAction($filterAction);
+        }
+
+        if ($filterObjectType !== null) {
+            $logSearch->byObjectType($filterObjectType);
+        }
+
+        if ($filterObjectId !== null) {
+            $logSearch->byObjectId($filterObjectId);
+        }
     }
 }

@@ -14,6 +14,8 @@ use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\LogHelper;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
+use Waca\Pages\PageUserManagement;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -25,21 +27,27 @@ class StatsUsers extends InternalPageBase
 
         $database = $this->getDatabase();
 
-        $lists = array(
-            "Admin"      => User::getAllWithStatus("Admin", $database),
-            "User"       => User::getAllWithStatus("User", $database),
-            "CheckUsers" => User::getAllCheckusers($database),
-        );
+        $query = <<<SQL
+select
+    u.id
+    , u.username
+    , case when ru.role is not null then 'Yes' else 'No' end tooluser
+    , case when ra.role is not null then 'Yes' else 'No' end tooladmin
+    , case when rc.role is not null then 'Yes' else 'No' end checkuser
+    , case when rr.role is not null then 'Yes' else 'No' end toolroot
+from user u
+    left join userrole ru on ru.user = u.id and ru.role = 'user'
+    left join userrole ra on ra.user = u.id and ra.role = 'admin'
+    left join userrole rc on rc.user = u.id and rc.role = 'checkuser'
+    left join userrole rr on rr.user = u.id and rr.role = 'toolRoot'
+where u.status = 'Active'
+SQL;
 
-        $this->assign("lists", $lists);
+        $users = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
+        $this->assign('users', $users);
 
         $this->assign('statsPageTitle', 'Account Creation Tool users');
         $this->setTemplate("statistics/users.tpl");
-    }
-
-    public function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asPublicPage();
     }
 
     /**
@@ -127,6 +135,14 @@ SQL
             $this->assign("accountlog", $logData);
             $this->assign("users", $users);
         }
+
+        $currentUser = User::getCurrent($database);
+        $this->assign('canApprove', $this->barrierTest('approve', $currentUser, PageUserManagement::class));
+        $this->assign('canDecline', $this->barrierTest('decline', $currentUser, PageUserManagement::class));
+        $this->assign('canRename', $this->barrierTest('rename', $currentUser, PageUserManagement::class));
+        $this->assign('canEditUser', $this->barrierTest('editUser', $currentUser, PageUserManagement::class));
+        $this->assign('canSuspend', $this->barrierTest('suspend', $currentUser, PageUserManagement::class));
+        $this->assign('canEditRoles', $this->barrierTest('editRoles', $currentUser, PageUserManagement::class));
 
         $this->assign('statsPageTitle', 'Account Creation Tool users');
         $this->setTemplate("statistics/userdetail.tpl");

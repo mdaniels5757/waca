@@ -15,26 +15,11 @@ use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\PdoDatabase;
-use Waca\Security\SecurityConfiguration;
 use Waca\SessionAlert;
 use Waca\WebRequest;
 
 class PageCloseRequest extends RequestActionBase
 {
-    /**
-     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-     * the return value from this function.
-     *
-     * If this page even supports actions, you will need to check the route
-     *
-     * @return SecurityConfiguration
-     * @category Security-Critical
-     */
-    protected function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asInternalPage();
-    }
-
     protected function main()
     {
         $this->processClose();
@@ -52,6 +37,7 @@ class PageCloseRequest extends RequestActionBase
         $currentUser = User::getCurrent($database);
         $template = $this->getTemplate($database);
         $request = $this->getRequest($database);
+        $request->setUpdateVersion(WebRequest::postInt('updateversion'));
 
         if ($request->getStatus() === 'Closed') {
             throw new ApplicationLogicException('Request is already closed');
@@ -75,7 +61,6 @@ class PageCloseRequest extends RequestActionBase
 
         Logger::closeRequest($database, $request, $template->getId(), null);
 
-        $request->setUpdateVersion(WebRequest::postInt('updateversion'));
         $request->save();
 
         // Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE and
@@ -264,6 +249,8 @@ class PageCloseRequest extends RequestActionBase
 
         $this->assign('request', $request->getId());
         $this->assign('template', $template->getId());
+
+        $this->assign('updateversion', $request->getUpdateVersion());
 
         $this->assign('emailSentOverride', WebRequest::postBoolean('emailSentOverride') ? 'true' : 'false');
         $this->assign('reserveOverride', WebRequest::postBoolean('reserveOverride') ? 'true' : 'false');

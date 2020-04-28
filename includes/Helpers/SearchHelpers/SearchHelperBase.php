@@ -9,6 +9,7 @@
 namespace Waca\Helpers\SearchHelpers;
 
 use PDO;
+use PDOStatement;
 use Waca\DataObject;
 use Waca\PdoDatabase;
 
@@ -30,45 +31,69 @@ abstract class SearchHelperBase
      * that we use positional parameters instead of named parameters because we don't know many times different options
      * will be called (looking at excluding() here, but there's the option for others).
      */
-    protected $whereClause = 'WHERE 1 = 1';
+    protected $whereClause = ' WHERE 1 = 1';
     /** @var string */
-    private $table;
+    protected $table;
+    protected $joinClause = '';
+    private $targetClass;
 
     /**
      * SearchHelperBase constructor.
      *
      * @param PdoDatabase $database
      * @param string      $table
+     * @param             $targetClass
      * @param null|string $order Order by clause, excluding ORDER BY.
      */
-    protected function __construct(PdoDatabase $database, $table, $order = null)
+    protected function __construct(PdoDatabase $database, $table, $targetClass, $order = null)
     {
         $this->database = $database;
         $this->table = $table;
         $this->orderBy = $order;
+        $this->targetClass = $targetClass;
     }
 
     /**
-     * @param $targetClass
+     * Finalises the database query, and executes it, returning a set of objects.
      *
      * @return DataObject[]
      */
-    protected function fetchObjects($targetClass)
+    public function fetch()
     {
-        $query = 'SELECT * FROM ' . $this->table . ' ' . $this->whereClause;
-        $query .= $this->applyOrder();
-        $query .= $this->applyLimit();
-
-        $statement = $this->database->prepare($query);
-        $statement->execute($this->parameterList);
+        $statement = $this->getData();
 
         /** @var DataObject[] $returnedObjects */
-        $returnedObjects = $statement->fetchAll(PDO::FETCH_CLASS, $targetClass);
+        $returnedObjects = $statement->fetchAll(PDO::FETCH_CLASS, $this->targetClass);
         foreach ($returnedObjects as $req) {
             $req->setDatabase($this->database);
         }
 
         return $returnedObjects;
+    }
+
+    /**
+     * Finalises the database query, and executes it, returning only the requested column.
+     *
+     * @param string $column The required column
+     * @return array
+     */
+    public function fetchColumn($column){
+        $statement = $this->getData(array($column));
+
+        return $statement->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function fetchMap($column){
+        $statement = $this->getData(array('id', $column));
+
+        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $map = array();
+
+        foreach ($data as $row) {
+            $map[$row['id']] = $row[$column];
+        }
+
+        return $map;
     }
 
     /**
@@ -78,7 +103,9 @@ abstract class SearchHelperBase
      */
     public function getRecordCount(&$count)
     {
-        $query = 'SELECT COUNT(1) FROM ' . $this->table . ' ' . $this->whereClause;
+        $query = 'SELECT /* SearchHelper */ COUNT(*) FROM ' . $this->table . ' origin ';
+        $query .= $this->joinClause . $this->whereClause;
+
         $statement = $this->database->prepare($query);
         $statement->execute($this->parameterList);
 
@@ -128,5 +155,60 @@ abstract class SearchHelperBase
         }
 
         return '';
+    }
+
+    /**
+     * @param array $columns
+     *
+     * @return PDOStatement
+     */
+    private function getData($columns = array('*'))
+    {
+        $query = $this->buildQuery($columns);
+        $query .= $this->applyOrder();
+        $query .= $this->applyLimit();
+
+        $statement = $this->database->prepare($query);
+        $statement->execute($this->parameterList);
+
+        return $statement;
+    }
+
+    /**
+     * @param array $columns
+     *
+     * @return string
+     */
+    protected function buildQuery($columns)
+    {
+        $colData = array();
+        foreach ($columns as $c) {
+            $colData[] = 'origin.' . $c;
+        }
+
+        $query = 'SELECT /* SearchHelper */ ' . implode(', ', $colData) . ' FROM ' . $this->table . ' origin ';
+        $query .= $this->joinClause . $this->whereClause;
+
+        return $query;
+    }
+
+    public function inIds($idList) {
+        $this->inClause('id', $idList);
+        return $this;
+    }
+
+    protected function inClause($column, $values) {
+        if (count($values) === 0) {
+            return;
+        }
+
+        // Urgh. OK. You can't use IN() with parameters directly, so let's munge something together.
+        $valueCount = count($values);
+
+        // Firstly, let's create a string of question marks, which will do as positional parameters.
+        $inSection = str_repeat('?,', $valueCount - 1) . '?';
+
+        $this->whereClause .= " AND {$column} IN ({$inSection})";
+        $this->parameterList = array_merge($this->parameterList, $values);
     }
 }

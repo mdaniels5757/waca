@@ -19,7 +19,9 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\PdoDatabase;
+use Waca\Security\SecurityManager;
 use Waca\SiteConfiguration;
 
 class LogHelper
@@ -27,15 +29,21 @@ class LogHelper
     /**
      * Summary of getRequestLogsWithComments
      *
-     * @param int         $requestId
-     * @param PdoDatabase $db
+     * @param int             $requestId
+     * @param PdoDatabase     $db
+     * @param SecurityManager $securityManager
      *
-     * @return DataObject[]
+     * @return \Waca\DataObject[]
      */
-    public static function getRequestLogsWithComments($requestId, PdoDatabase $db)
+    public static function getRequestLogsWithComments($requestId, PdoDatabase $db, SecurityManager $securityManager)
     {
         $logs = LogSearchHelper::get($db)->byObjectType('Request')->byObjectId($requestId)->fetch();
-        $comments = Comment::getForRequest($requestId, $db);
+
+        $currentUser = User::getCurrent($db);
+        $securityResult = $securityManager->allows('RequestData', 'seeRestrictedComments', $currentUser);
+        $showAllComments = $securityResult === SecurityManager::ALLOWED;
+
+        $comments = Comment::getForRequest($requestId, $db, $showAllComments, $currentUser->getId());
 
         $items = array_merge($logs, $comments);
 
@@ -131,6 +139,7 @@ class LogHelper
             'Unreserved'      => 'unreserved',
             'Approved'        => 'approved',
             'Suspended'       => 'suspended',
+            'RoleChange'      => 'changed roles',
             'Banned'          => 'banned',
             'Edited'          => 'edited interface message',
             'Declined'        => 'declined',
@@ -174,6 +183,7 @@ class LogHelper
             'Unreserved'      => 'unreserved',
             'Approved'        => 'approved',
             'Suspended'       => 'suspended',
+            'RoleChange'      => 'changed roles',
             'Banned'          => 'banned',
             'Edited'          => 'edited interface message',
             'Declined'        => 'declined',
@@ -209,6 +219,19 @@ SQL
         return $lookup;
     }
 
+    public static function getObjectTypes()
+    {
+        return array(
+            'Ban'             => 'Ban',
+            'Comment'         => 'Comment',
+            'EmailTemplate'   => 'Email template',
+            'Request'         => 'Request',
+            'SiteNotice'      => 'Site notice',
+            'User'            => 'User',
+            'WelcomeTemplate' => 'Welcome template',
+        );
+    }
+
     /**
      * This returns a HTML
      *
@@ -236,6 +259,10 @@ SQL
             case 'Ban':
                 /** @var Ban $ban */
                 $ban = Ban::getById($objectId, $database);
+
+                if ($ban === false) {
+                    return 'Ban #' . $objectId . "</a>";
+                }
 
                 return 'Ban #' . $objectId . " (" . htmlentities($ban->getTarget()) . ")</a>";
             case 'EmailTemplate':
@@ -309,7 +336,7 @@ HTML;
             }
         }
 
-        $users = User::getUsernames($userIds, $database);
+        $users = UserSearchHelper::get($database)->inIds($userIds)->fetchMap('username');
         $users[-1] = User::getCommunity()->getUsername();
 
         $logData = array();
@@ -319,14 +346,34 @@ HTML;
             $objectDescription = self::getObjectDescription($logEntry->getObjectId(), $logEntry->getObjectType(),
                 $database, $configuration);
 
-            if ($logEntry->getAction() === 'Renamed') {
-                $renameData = unserialize($logEntry->getComment());
-                $oldName = htmlentities($renameData['old'], ENT_COMPAT, 'UTF-8');
-                $newName = htmlentities($renameData['new'], ENT_COMPAT, 'UTF-8');
-                $comment = 'Renamed \'' . $oldName . '\' to \'' . $newName . '\'.';
-            }
-            else {
-                $comment = $logEntry->getComment();
+            switch ($logEntry->getAction()) {
+                case 'Renamed':
+                    $renameData = unserialize($logEntry->getComment());
+                    $oldName = htmlentities($renameData['old'], ENT_COMPAT, 'UTF-8');
+                    $newName = htmlentities($renameData['new'], ENT_COMPAT, 'UTF-8');
+                    $comment = 'Renamed \'' . $oldName . '\' to \'' . $newName . '\'.';
+                    break;
+                case 'RoleChange':
+                    $roleChangeData = unserialize($logEntry->getComment());
+
+                    $removed = array();
+                    foreach ($roleChangeData['removed'] as $r) {
+                        $removed[] = htmlentities($r, ENT_COMPAT, 'UTF-8');
+                    }
+
+                    $added = array();
+                    foreach ($roleChangeData['added'] as $r) {
+                        $added[] = htmlentities($r, ENT_COMPAT, 'UTF-8');
+                    }
+
+                    $reason = htmlentities($roleChangeData['reason'], ENT_COMPAT, 'UTF-8');
+
+                    $roleDelta = 'Removed [' . implode(', ', $removed) . '], Added [' . implode(', ', $added) . ']';
+                    $comment = $roleDelta . ' with comment: ' . $reason;
+                    break;
+                default:
+                    $comment = $logEntry->getComment();
+                    break;
             }
 
             $logData[] = array(
