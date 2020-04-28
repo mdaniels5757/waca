@@ -2,16 +2,20 @@ inherit: true
 
 build:
   nodes:
-    testing:
+    tests:
       tests:
         override:
           - true # To disable Scrutinizer's own CI.
     analysis:
       tests:
         override:
-          - php-scrutinizer-run --enable-security-analysis
-          - command: phpcs-run
-            use_website_config: true
+          - 
+              command: php-scrutinizer-run --enable-security-analysis
+              on_node: 1
+          -
+              command: phpcs-run
+              use_website_config: true
+              on_node: 2
 
 tools:
     php_code_sniffer: true
