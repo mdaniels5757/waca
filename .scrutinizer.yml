@@ -1,10 +1,11 @@
 inherit: true
 
 build:
-  tests:
-    override:
-      - true # To disable Scrutinizer's own CI.
   nodes:
+    testing:
+      tests:
+        override:
+          - true # To disable Scrutinizer's own CI.
     analysis:
       tests:
         override:
