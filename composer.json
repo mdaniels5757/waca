@@ -9,7 +9,7 @@
         "fortawesome/font-awesome": "~5.13.0",
         "scssphp/scssphp": "^1.1",
         "spomky-labs/otphp": "^9.1",
-        "bacon/bacon-qr-code": "^1.0.1",
+        "bacon/bacon-qr-code": "^2.0.0",
         "paragonie/constant_time_encoding": "^2.0",
         "yubico/u2flib-server": "^1.0.1",
         "drvic10k/bootstrap-sortable": "^2.1",
