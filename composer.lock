@@ -1,23 +1,23 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "e97bb4b73af836c202d63ddde082d275",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
-            "version": "2.0.0",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Bacon/BaconQrCode.git",
-                "reference": "eaac909da3ccc32b748a65b127acd8918f58d9b0"
+                "reference": "add6d9ff97336b62f95a3b94f75cea4e085465b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Bacon/BaconQrCode/zipball/eaac909da3ccc32b748a65b127acd8918f58d9b0",
-                "reference": "eaac909da3ccc32b748a65b127acd8918f58d9b0",
+                "url": "https://api.github.com/repos/Bacon/BaconQrCode/zipball/add6d9ff97336b62f95a3b94f75cea4e085465b2",
+                "reference": "add6d9ff97336b62f95a3b94f75cea4e085465b2",
                 "shasum": ""
             },
             "require": {
@@ -27,8 +27,8 @@
             },
             "require-dev": {
                 "phly/keep-a-changelog": "^1.4",
-                "phpunit/phpunit": "^6.4",
-                "squizlabs/php_codesniffer": "^3.1"
+                "phpunit/phpunit": "^7 | ^8 | ^9",
+                "squizlabs/php_codesniffer": "^3.4"
             },
             "suggest": {
                 "ext-imagick": "to generate QR code images"
@@ -47,13 +47,13 @@
                 {
                     "name": "Ben Scholzen 'DASPRiD'",
                     "email": "mail@dasprids.de",
-                    "homepage": "http://www.dasprids.de",
+                    "homepage": "https://dasprids.de/",
                     "role": "Developer"
                 }
             ],
             "description": "BaconQrCode is a QR code generator for PHP.",
             "homepage": "https://github.com/Bacon/BaconQrCode",
-            "time": "2018-04-25T17:53:56+00:00"
+            "time": "2020-07-30T16:40:58+00:00"
         },
         {
             "name": "beberlei/assert",
@@ -208,21 +208,21 @@
         },
         {
             "name": "dasprid/enum",
-            "version": "1.0.0",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DASPRiD/Enum.git",
-                "reference": "631ef6e638e9494b0310837fa531bedd908fc22b"
+                "reference": "6ccc0d7141a7f149e3c56cb0ce5f05d9152cfd07"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DASPRiD/Enum/zipball/631ef6e638e9494b0310837fa531bedd908fc22b",
-                "reference": "631ef6e638e9494b0310837fa531bedd908fc22b",
+                "url": "https://api.github.com/repos/DASPRiD/Enum/zipball/6ccc0d7141a7f149e3c56cb0ce5f05d9152cfd07",
+                "reference": "6ccc0d7141a7f149e3c56cb0ce5f05d9152cfd07",
                 "shasum": ""
             },
             "require-dev": {
-                "phpunit/phpunit": "^6.4",
-                "squizlabs/php_codesniffer": "^3.1"
+                "phpunit/phpunit": "^7 | ^8 | ^9",
+                "squizlabs/php_codesniffer": "^3.4"
             },
             "type": "library",
             "autoload": {
@@ -238,7 +238,8 @@
                 {
                     "name": "Ben Scholzen 'DASPRiD'",
                     "email": "mail@dasprids.de",
-                    "homepage": "https://dasprids.de/"
+                    "homepage": "https://dasprids.de/",
+                    "role": "Developer"
                 }
             ],
             "description": "PHP 7.1 enum implementation",
@@ -246,16 +247,14 @@
                 "enum",
                 "map"
             ],
-            "time": "2017-10-25T22:45:27+00:00"
+            "time": "2020-07-30T16:37:13+00:00"
         },
         {
             "name": "dropbox/zxcvbn",
             "version": "4.4.2",
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/dropbox/zxcvbn/archive/v4.4.2.zip",
-                "reference": null,
-                "shasum": null
+                "url": "https://github.com/dropbox/zxcvbn/archive/v4.4.2.zip"
             },
             "type": "library"
         },
@@ -264,9 +263,7 @@
             "version": "2.1.0",
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/drvic10k/bootstrap-sortable/archive/2.1.0.zip",
-                "reference": null,
-                "shasum": null
+                "url": "https://github.com/drvic10k/bootstrap-sortable/archive/2.1.0.zip"
             },
             "type": "library"
         },
@@ -838,6 +835,20 @@
                 "portable",
                 "shim"
             ],
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-06-06T08:46:27+00:00"
         },
         {
@@ -1022,6 +1033,12 @@
                 "sass",
                 "web"
             ],
+            "funding": [
+                {
+                    "url": "https://opencollective.com/bootstrap",
+                    "type": "open_collective"
+                }
+            ],
             "time": "2020-05-12T17:44:42+00:00"
         },
         {
@@ -1188,6 +1205,20 @@
                 "Xdebug",
                 "performance"
             ],
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/composer/composer",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-06-04T11:16:35+00:00"
         },
         {
@@ -1243,6 +1274,20 @@
             "keywords": [
                 "constructor",
                 "instantiate"
+            ],
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Finstantiator",
+                    "type": "tidelift"
+                }
             ],
             "time": "2020-05-29T17:27:14+00:00"
         },
@@ -1339,6 +1384,12 @@
                 "BSD-3-Clause"
             ],
             "description": "Official version of pdepend to be handled with Composer",
+            "funding": [
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/pdepend/pdepend",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-06-20T10:53:13+00:00"
         },
         {
@@ -2690,6 +2741,20 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-05-23T13:08:13+00:00"
         },
         {
@@ -2765,6 +2830,20 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-06-12T08:11:32+00:00"
         },
         {
@@ -2811,6 +2890,20 @@
             ],
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-05-27T08:34:37+00:00"
         },
         {
@@ -2861,6 +2954,20 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-05-30T20:35:19+00:00"
         },
         {
@@ -2922,6 +3029,20 @@
                 "ctype",
                 "polyfill",
                 "portable"
+            ],
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
             ],
             "time": "2020-06-06T08:46:27+00:00"
         },
@@ -2989,6 +3110,20 @@
                 "portable",
                 "shim"
             ],
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-06-06T08:46:27+00:00"
         },
         {
@@ -3046,6 +3181,20 @@
                 "interfaces",
                 "interoperability",
                 "standards"
+            ],
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
             ],
             "time": "2020-05-20T17:43:50+00:00"
         },
@@ -3106,6 +3255,20 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-05-20T08:37:50+00:00"
         },
         {
@@ -3172,5 +3335,6 @@
         "ext-mbstring": "*",
         "ext-simplexml": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
