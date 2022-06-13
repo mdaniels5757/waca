@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "e97bb4b73af836c202d63ddde082d275",
@@ -253,9 +253,7 @@
             "version": "4.4.2",
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/dropbox/zxcvbn/archive/v4.4.2.zip",
-                "reference": null,
-                "shasum": null
+                "url": "https://github.com/dropbox/zxcvbn/archive/v4.4.2.zip"
             },
             "type": "library"
         },
@@ -264,9 +262,7 @@
             "version": "2.1.0",
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/drvic10k/bootstrap-sortable/archive/2.1.0.zip",
-                "reference": null,
-                "shasum": null
+                "url": "https://github.com/drvic10k/bootstrap-sortable/archive/2.1.0.zip"
             },
             "type": "library"
         },
@@ -2577,16 +2573,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.5.5",
+            "version": "3.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "73e2e7f57d958e7228fce50dc0c61f58f017f9f6"
+                "reference": "a2cd51b45bcaef9c1f2a4bda48f2dd2fa2b95563"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/73e2e7f57d958e7228fce50dc0c61f58f017f9f6",
-                "reference": "73e2e7f57d958e7228fce50dc0c61f58f017f9f6",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/a2cd51b45bcaef9c1f2a4bda48f2dd2fa2b95563",
+                "reference": "a2cd51b45bcaef9c1f2a4bda48f2dd2fa2b95563",
                 "shasum": ""
             },
             "require": {
@@ -2624,7 +2620,12 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2020-04-17T01:09:41+00:00"
+            "support": {
+                "issues": "https://github.com/squizlabs/PHP_CodeSniffer/issues",
+                "source": "https://github.com/squizlabs/PHP_CodeSniffer",
+                "wiki": "https://github.com/squizlabs/PHP_CodeSniffer/wiki"
+            },
+            "time": "2022-06-13T06:31:38+00:00"
         },
         {
             "name": "symfony/config",
@@ -3172,5 +3173,6 @@
         "ext-mbstring": "*",
         "ext-simplexml": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
 }
