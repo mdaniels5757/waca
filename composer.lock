@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e97bb4b73af836c202d63ddde082d275",
+    "content-hash": "821070153d595ff2566c01adb0d52b8e",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -253,9 +253,7 @@
             "version": "4.4.2",
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/dropbox/zxcvbn/archive/v4.4.2.zip",
-                "reference": null,
-                "shasum": null
+                "url": "https://github.com/dropbox/zxcvbn/archive/v4.4.2.zip"
             },
             "type": "library"
         },
@@ -264,24 +262,22 @@
             "version": "2.1.0",
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/drvic10k/bootstrap-sortable/archive/2.1.0.zip",
-                "reference": null,
-                "shasum": null
+                "url": "https://github.com/drvic10k/bootstrap-sortable/archive/2.1.0.zip"
             },
             "type": "library"
         },
         {
             "name": "fortawesome/font-awesome",
-            "version": "5.13.1",
+            "version": "6.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FortAwesome/Font-Awesome.git",
-                "reference": "1147d199a35293b391152ee85e2d30988439157f"
+                "reference": "96cafbd73ec4339b8c73c36673ce1518db82cc5c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/1147d199a35293b391152ee85e2d30988439157f",
-                "reference": "1147d199a35293b391152ee85e2d30988439157f",
+                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/96cafbd73ec4339b8c73c36673ce1518db82cc5c",
+                "reference": "96cafbd73ec4339b8c73c36673ce1518db82cc5c",
                 "shasum": ""
             },
             "type": "library",
@@ -293,32 +289,8 @@
             ],
             "authors": [
                 {
-                    "name": "Travis Chase",
-                    "homepage": "http://twitter.com/supercodepoet"
-                },
-                {
-                    "name": "Dave Gandy",
-                    "homepage": "http://twitter.com/davegandy"
-                },
-                {
-                    "name": "Rob Madole",
-                    "homepage": "http://twitter.com/robmadole"
-                },
-                {
-                    "name": "Jory Raphael",
-                    "homepage": "http://twitter.com/sensibleworld"
-                },
-                {
-                    "name": "Geremia Taglialatela",
-                    "homepage": "http://twitter.com/gtagliala"
-                },
-                {
-                    "name": "Brian Talbot",
-                    "homepage": "http://twitter.com/talbs"
-                },
-                {
-                    "name": "Mike Wilkerson",
-                    "homepage": "http://twitter.com/mw77"
+                    "name": "The Font Awesome Team",
+                    "homepage": "https://github.com/orgs/FortAwesome/people"
                 }
             ],
             "description": "The iconic font, CSS, and SVG framework",
@@ -331,7 +303,13 @@
                 "icon",
                 "svg"
             ],
-            "time": "2020-06-18T20:53:17+00:00"
+            "support": {
+                "docs": "http://fontawesome.com/docs",
+                "email": "hello@fontawesome.com",
+                "issues": "https://github.com/FortAwesome/Font-Awesome/issues",
+                "source": "https://github.com/FortAwesome/Font-Awesome"
+            },
+            "time": "2022-11-15T18:34:54+00:00"
         },
         {
             "name": "mediawiki/oauthclient",
@@ -3172,5 +3150,6 @@
         "ext-mbstring": "*",
         "ext-simplexml": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
 }
