@@ -54,7 +54,7 @@ jobs:
       run: bash .github/scripts/lint.sh
   
     - name: Run test suite
-      run: php vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
+      run: php vendor/bin/phpunit --coverage-clover=coverage.xml
 
     - name: Upload Scrutinizer coverage
       uses: sudo-bot/action-scrutinizer@latest
