@@ -129,16 +129,16 @@
         },
         {
             "name": "bjeavons/zxcvbn-php",
-            "version": "1.3.1",
+            "version": "1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bjeavons/zxcvbn-php.git",
-                "reference": "994928ae5b17ecff8baa2406832d37bdf01116c0"
+                "reference": "426f664501a0747beb8f3ee17ac30c7dd6327ffa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bjeavons/zxcvbn-php/zipball/994928ae5b17ecff8baa2406832d37bdf01116c0",
-                "reference": "994928ae5b17ecff8baa2406832d37bdf01116c0",
+                "url": "https://api.github.com/repos/bjeavons/zxcvbn-php/zipball/426f664501a0747beb8f3ee17ac30c7dd6327ffa",
+                "reference": "426f664501a0747beb8f3ee17ac30c7dd6327ffa",
                 "shasum": ""
             },
             "require": {
@@ -148,6 +148,7 @@
             },
             "require-dev": {
                 "php-coveralls/php-coveralls": "*",
+                "phpstan/phpstan": "^2.0",
                 "phpunit/phpunit": "^8.5",
                 "squizlabs/php_codesniffer": "3.*"
             },
@@ -178,9 +179,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bjeavons/zxcvbn-php/issues",
-                "source": "https://github.com/bjeavons/zxcvbn-php/tree/1.3.1"
+                "source": "https://github.com/bjeavons/zxcvbn-php/tree/1.4.2"
             },
-            "time": "2021-12-21T18:37:02+00:00"
+            "time": "2025-02-24T16:47:20+00:00"
         },
         {
             "name": "dasprid/enum",
@@ -1384,20 +1385,21 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.30.0",
+            "version": "v1.32.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "fd22ab50000ef01661e2a31d850ebaa297f8e03c"
+                "reference": "6d857f4d76bd4b343eac26d6b539585d2bc56493"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/fd22ab50000ef01661e2a31d850ebaa297f8e03c",
-                "reference": "fd22ab50000ef01661e2a31d850ebaa297f8e03c",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/6d857f4d76bd4b343eac26d6b539585d2bc56493",
+                "reference": "6d857f4d76bd4b343eac26d6b539585d2bc56493",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1"
+                "ext-iconv": "*",
+                "php": ">=7.2"
             },
             "provide": {
                 "ext-mbstring": "*"
@@ -1408,8 +1410,8 @@
             "type": "library",
             "extra": {
                 "thanks": {
-                    "name": "symfony/polyfill",
-                    "url": "https://github.com/symfony/polyfill"
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
                 }
             },
             "autoload": {
@@ -1444,7 +1446,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.30.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.32.0"
             },
             "funding": [
                 {
@@ -1460,7 +1462,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-19T12:30:46+00:00"
+            "time": "2024-12-23T08:48:59+00:00"
         },
         {
             "name": "symfony/polyfill-php80",
@@ -4411,5 +4413,5 @@
         "ext-simplexml": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }
