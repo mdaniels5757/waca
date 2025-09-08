@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "134a112a5bbd822975bf63dfa0a26d3a",
+    "content-hash": "35af32373eded9bcced31f63cb3d5bda",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -327,16 +327,16 @@
         },
         {
             "name": "fortawesome/font-awesome",
-            "version": "6.6.0",
+            "version": "7.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FortAwesome/Font-Awesome.git",
-                "reference": "37eff7fa00de26db41183a3ad8ed0e9119fbc44b"
+                "reference": "b476ed9aeef6ff16accd275eca515d4e08c3e724"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/37eff7fa00de26db41183a3ad8ed0e9119fbc44b",
-                "reference": "37eff7fa00de26db41183a3ad8ed0e9119fbc44b",
+                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/b476ed9aeef6ff16accd275eca515d4e08c3e724",
+                "reference": "b476ed9aeef6ff16accd275eca515d4e08c3e724",
                 "shasum": ""
             },
             "type": "library",
@@ -368,7 +368,7 @@
                 "issues": "https://github.com/FortAwesome/Font-Awesome/issues",
                 "source": "https://github.com/FortAwesome/Font-Awesome"
             },
-            "time": "2024-07-16T17:13:31+00:00"
+            "time": "2025-09-02T19:42:02+00:00"
         },
         {
             "name": "league/commonmark",
@@ -4397,7 +4397,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
@@ -4410,6 +4410,6 @@
         "ext-mbstring": "*",
         "ext-simplexml": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
