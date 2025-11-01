@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8acdc701fa993d8a7d08ff5cd5a9059f",
+    "content-hash": "ce77b4487af91099e223f34ec0e38778",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -328,16 +328,16 @@
         },
         {
             "name": "fortawesome/font-awesome",
-            "version": "6.7.2",
+            "version": "7.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FortAwesome/Font-Awesome.git",
-                "reference": "af620534bfc3c2d4cbefcfeec29603bbe7809e64"
+                "reference": "41cfe644047fc3a4c49c22acc721cacc3e1021fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/af620534bfc3c2d4cbefcfeec29603bbe7809e64",
-                "reference": "af620534bfc3c2d4cbefcfeec29603bbe7809e64",
+                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/41cfe644047fc3a4c49c22acc721cacc3e1021fe",
+                "reference": "41cfe644047fc3a4c49c22acc721cacc3e1021fe",
                 "shasum": ""
             },
             "type": "library",
@@ -369,7 +369,7 @@
                 "issues": "https://github.com/FortAwesome/Font-Awesome/issues",
                 "source": "https://github.com/FortAwesome/Font-Awesome"
             },
-            "time": "2024-12-16T21:31:56+00:00"
+            "time": "2025-10-01T19:14:40+00:00"
         },
         {
             "name": "league/commonmark",
