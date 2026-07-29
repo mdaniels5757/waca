@@ -12,7 +12,7 @@ services:
       - msgbroker
       - mailsink
   nginx:
-    image: nginx:alpine
+    image: nginx:1.31.2-alpine
     volumes:
       - .:/var/www/html/:ro
       - ./docker/nginx-waca.conf.template:/etc/nginx/templates/waca.conf.template:ro
