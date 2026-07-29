@@ -169,8 +169,6 @@ class PageViewRequest extends InternalPageBase
      */
     protected function setupGeneralData(PdoDatabase $database)
     {
-        $this->assign('createAccountReason', 'Requested account at [[WP:ACC]], request #');
-
         // FIXME: domains
         /** @var Domain $domain */
         $domain = Domain::getById(1, $database);
@@ -335,8 +333,12 @@ class PageViewRequest extends InternalPageBase
     {
         $blacklistData = $this->getBlacklistHelper()->isBlacklisted($request->getName());
 
-        $this->assign('requestIsBlacklisted', $blacklistData !== false);
-        $this->assign('requestBlacklist', $blacklistData);
+        if (($blacklistData !== false) && ($blacklistData !== '')) {
+            $this->assign('requestIsBlacklisted', true);
+            $this->assign('requestBlacklist', $blacklistData);
+        } else {
+            $this->assign('requestIsBlacklisted', false);
+        }
 
         try {
             $spoofs = $this->getAntiSpoofProvider()->getSpoofs($request->getName());
@@ -381,8 +383,8 @@ class PageViewRequest extends InternalPageBase
         $creationHasChoice = count(array_filter([$canManualCreate, $canOauthCreate, $canBotCreate])) > 1;
 
         $creationModePreference = $preferenceManager->getPreference(PreferenceManager::PREF_CREATION_MODE);
-        if (!$this->barrierTest($creationModePreference, $user, 'RequestCreation')) {
-            // user is not allowed to use their default. Force a choice.
+        if (($creationModePreference === null) || (!$this->barrierTest($creationModePreference, $user, 'RequestCreation'))) {
+            // user is not allowed to use their default, or does not have one. Force a choice.
             $creationHasChoice = true;
         }
 

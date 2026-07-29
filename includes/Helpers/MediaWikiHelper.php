@@ -87,7 +87,7 @@ class MediaWikiHelper
         $createResponse = $this->mediaWikiClient->doApiCall($createParams, 'POST');
 
         if (isset($createResponse->error)) {
-            throw new MediaWikiApiException($response->error->code . ': ' . $response->error->info);
+            throw new MediaWikiApiException($createResponse->error->code . ': ' . $createResponse->error->info);
         }
 
         if (!isset($createResponse->createaccount) || !isset($createResponse->createaccount->status)) {
@@ -247,7 +247,7 @@ class MediaWikiHelper
         $parameters = array(
             'action'  => 'query',
             'list'    => 'users',
-            'format'  => 'php',
+            'format'  => 'json',
             'ususers' => $username,
         );
 
