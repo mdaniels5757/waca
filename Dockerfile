@@ -59,7 +59,6 @@ FROM base AS production
 COPY --from=builder --chown=www-data:www-data /var/www/html /var/www/html
 
 RUN mkdir -p templates_c errorlog \
-    && sed -i "s|exec(\"git describe --always --dirty\")|'$(cat VERSION)'|" includes/Environment.php \
     && chown -R www-data:www-data /var/www/html/templates_c /var/www/html/errorlog
 
 COPY docker/php-opcache-prod.ini /usr/local/etc/php/conf.d/opcache-production.ini
